@@ -1,48 +1,95 @@
 package api
 
-// API config
+import (
+	"encoding/json"
+	"regexp"
+
+	"github.com/xtls/xray-core/infra/conf"
+)
+
+const (
+	UserNotModified = "users not modified"
+	NodeNotModified = "node not modified"
+	RuleNotModified = "rules not modified"
+)
+
+// Config API config
 type Config struct {
-	APIHost  string `mapstructure:"ApiHost"`
-	NodeID   int    `mapstructure:"NodeID"`
-	Key      string `mapstructure:"ApiKey"`
-	NodeType string `mapstructure:"NodeType"`
+	APIHost             string  `mapstructure:"ApiHost"`
+	NodeID              int     `mapstructure:"NodeID"`
+	Key                 string  `mapstructure:"ApiKey"`
+	NodeType            string  `mapstructure:"NodeType"`
+	EnableVless         bool    `mapstructure:"EnableVless"`
+	VlessFlow           string  `mapstructure:"VlessFlow"`
+	Timeout             int     `mapstructure:"Timeout"`
+	SpeedLimit          float64 `mapstructure:"SpeedLimit"`
+	DeviceLimit         int     `mapstructure:"DeviceLimit"`
+	RuleListPath        string  `mapstructure:"RuleListPath"`
+	DisableCustomConfig bool    `mapstructure:"DisableCustomConfig"`
 }
 
-// Node status
+// NodeStatus Node status
 type NodeStatus struct {
 	CPU    float64
 	Mem    float64
 	Disk   float64
-	Uptime int
+	Uptime uint64
 }
 
 type NodeInfo struct {
-	NodeType          string // Must be V2ray, Trojan, and Shadowsocks
-	NodeID            int
-	Port              int
-	SpeedLimit        uint64 // Bps
-	AlterID           int
-	TransportProtocol string
-	Host              string
-	Path              string
-	EnableTLS         bool
-	TLSType           string
-	EnableVless       bool
+	AcceptProxyProtocol bool
+	Authority           string
+	NodeType            string // Must be V2ray, Trojan, and Shadowsocks
+	NodeID              int
+	Port                uint32
+	SpeedLimit          uint64 // Bps
+	AlterID             uint16
+	TransportProtocol   string
+	FakeType            string
+	Host                string
+	Path                string
+	EnableTLS           bool
+	EnableSniffing      bool
+	RouteOnly           bool
+	EnableVless         bool
+	VlessFlow           string
+	CypherMethod        string
+	ServerKey           string
+	ServiceName         string
+	Method              string
+	Header              json.RawMessage
+	HttpHeaders         map[string]*conf.StringList
+	Headers             map[string]string
+	NameServerConfig    []*conf.NameServerConfig
+	EnableREALITY       bool
+	REALITYConfig       *REALITYConfig
+	Show                bool
+	EnableTFO           bool
+	Dest                string
+	ProxyProtocolVer    uint64
+	ServerNames         []string
+	PrivateKey          string
+	MinClientVer        string
+	MaxClientVer        string
+	MaxTimeDiff         uint64
+	ShortIds            []string
+	Xver                uint64
+	Flow                string
+	Security            string
+	Key                 string
+	RejectUnknownSni    bool
 }
 
 type UserInfo struct {
-	UID           int
-	Email         string
-	Passwd        string
-	Port          int
-	Method        string
-	SpeedLimit    uint64 // Bps
-	DeviceLimit   int
-	Protocol      string
-	ProtocolParam string
-	Obfs          string
-	ObfsParam     string
-	UUID          string
+	UID         int
+	Email       string
+	UUID        string
+	Passwd      string
+	Port        uint32
+	AlterID     uint16
+	Method      string
+	SpeedLimit  uint64 // Bps
+	DeviceLimit int
 }
 
 type OnlineUser struct {
@@ -62,4 +109,25 @@ type ClientInfo struct {
 	NodeID   int
 	Key      string
 	NodeType string
+}
+
+type DetectRule struct {
+	ID      int
+	Pattern *regexp.Regexp
+}
+
+type DetectResult struct {
+	UID    int
+	RuleID int
+}
+
+type REALITYConfig struct {
+	Dest             string
+	ProxyProtocolVer uint64
+	ServerNames      []string
+	PrivateKey       string
+	MinClientVer     string
+	MaxClientVer     string
+	MaxTimeDiff      uint64
+	ShortIds         []string
 }

@@ -1,0 +1,145 @@
+Log:
+  Level: warning # 日志等级：none, error, warning, info, debug
+  AccessPath: # /etc/XrayR/access.Log
+  ErrorPath: # /etc/XrayR/error.log
+DnsConfigPath: # /etc/XrayR/dns.json # DNS 配置文件路径，详见 https://xtls.github.io/config/dns.html
+RouteConfigPath: # /etc/XrayR/route.json # 路由配置文件路径，详见 https://xtls.github.io/config/routing.html
+InboundConfigPath: # /etc/XrayR/custom_inbound.json # 自定义入站配置路径，详见 https://xtls.github.io/config/inbound.html
+OutboundConfigPath: # /etc/XrayR/custom_outbound.json # 自定义出站配置路径，详见 https://xtls.github.io/config/outbound.html
+ConnectionConfig:
+  Handshake: 4 # 握手超时(秒)
+  ConnIdle: 30 # 连接空闲时间限制(秒)
+  UplinkOnly: 2 # 下行关闭后的连接保留时间(秒)
+  DownlinkOnly: 4 # 上行关闭后的连接保留时间(秒)
+  BufferSize: 64 # 每个连接的内部缓存大小(kB)
+Nodes:
+  - PanelType: "SSpanel" # 面板类型：SSpanel, NewV2board, PMpanel, Proxypanel, V2RaySocks, GoV2Panel, BunPanel
+    ApiConfig:
+      ApiHost: "http://127.0.0.1:667" # 面板地址
+      ApiKey: "123"                   # 面板通讯密钥
+      NodeID: 41                      # 节点 ID
+      NodeType: V2ray                 # 节点类型：V2ray, Vmess, Vless, Shadowsocks, Trojan, Shadowsocks-Plugin
+      Timeout: 30                     # API 请求超时(秒)
+      EnableVless: false              # 是否在 V2ray 节点上启用 Vless 协议
+      VlessFlow: "xtls-rprx-vision"   # 仅当启用 Vless 时生效的流控
+      SpeedLimit: 0                   # 本地限速 (Mbps)，会覆盖面板设置，0 表示不限速
+      DeviceLimit: 0                  # 本地设备数限制，会覆盖面板设置，0 表示不限制
+      RuleListPath: # /etc/XrayR/rulelist  本地规则列表路径
+      DisableCustomConfig: false      # 是否禁用 SSpanel 的自定义配置
+    ControllerConfig:
+      ListenIP: 0.0.0.0               # 监听地址
+      SendIP: 0.0.0.0                 # 出口地址
+      UpdatePeriodic: 60              # 节点信息更新间隔(秒)
+      EnableDNS: false                # 是否启用自定义 DNS 配置，需配合 dns.json
+      DNSType: AsIs                   # DNS 策略：AsIs, UseIP, UseIPv4, UseIPv6
+      EnableProxyProtocol: false      # 是否启用 PROXY protocol（仅 WebSocket 与 TCP 生效）
+      AutoSpeedLimitConfig:
+        Limit: 0                      # 触发告警的速度 (Mbps)，0 表示关闭自动限速
+        WarnTimes: 0                  # 连续告警 N 次后开始惩罚，0 表示立即惩罚
+        LimitSpeed: 0                 # 被限速用户的速度 (Mbps)
+        LimitDuration: 0              # 限速持续时长(分钟)
+      GlobalDeviceLimitConfig:
+        Enable: false                 # 是否启用全局设备数限制（基于 Redis）
+        RedisNetwork: tcp             # Redis 网络类型：tcp 或 unix
+        RedisAddr: 127.0.0.1:6379     # Redis 地址或 unix socket
+        RedisUsername:                # Redis 用户名
+        RedisPassword: YOUR PASSWORD  # Redis 密码
+        RedisDB: 0                    # Redis 库编号
+        Timeout: 5                    # Redis 请求超时(秒)
+        Expiry: 60                    # 过期时间(秒)
+      EnableFallback: false           # 是否启用 fallback（仅 Trojan 与 Vless 支持）
+      FallBackConfigs:                # 支持多组 fallback
+        - SNI:                        # TLS SNI，留空匹配任意
+          Alpn:                       # ALPN，留空匹配任意
+          Path:                       # HTTP 路径，留空匹配任意
+          Dest: 80                    # 必填，fallback 目标，详见 https://xtls.github.io/config/features/fallback.html
+          ProxyProtocolVer: 0         # 发送 PROXY protocol 版本，0 表示禁用
+      DisableLocalREALITYConfig: false  # 是否禁用本地 REALITY 配置
+      EnableREALITY: false            # 是否启用 REALITY
+      REALITYConfigs:
+        Show: true                    # 显示 REALITY 调试信息
+        Dest: www.amazon.com:443      # 必填，与 fallback 用法相同
+        ProxyProtocolVer: 0           # 发送 PROXY protocol 版本，0 表示禁用
+        ServerNames:                  # 必填，可供客户端使用的 serverName 列表，暂不支持 * 通配符
+          - www.amazon.com
+        PrivateKey: YOUR_PRIVATE_KEY  # 必填，使用 './XrayR x25519' 生成
+        MinClientVer:                 # 可选，最低 Xray 客户端版本，格式 x.y.z
+        MaxClientVer:                 # 可选，最高 Xray 客户端版本，格式 x.y.z
+        MaxTimeDiff: 0                # 可选，允许的最大时间差(毫秒)
+        ShortIds:                     # 必填，可用的 shortId 列表，可用于区分不同客户端
+          - ""
+          - 0123456789abcdef
+      CertConfig:
+        CertMode: dns                 # 证书获取方式：none, file, http, tls, dns。none 会强制关闭 TLS
+        CertDomain: "node1.test.com"  # 证书域名
+        CertFile: /etc/XrayR/cert/node1.test.com.cert # CertMode=file 时使用
+        KeyFile: /etc/XrayR/cert/node1.test.com.key
+        Provider: alidns              # DNS 验证服务商，完整列表见 https://go-acme.github.io/lego/dns/
+        Email: test@me.com
+        DNSEnv:                       # DNS 服务商所需的环境变量
+          ALICLOUD_ACCESS_KEY: aaa
+          ALICLOUD_SECRET_KEY: bbb
+
+# 如需配置多个节点，把下面的内容取消注释并复制粘贴扩展：
+#  - PanelType: "SSpanel"
+#    ApiConfig:
+#      ApiHost: "http://127.0.0.1:668"
+#      ApiKey: "123"
+#      NodeID: 42
+#      NodeType: V2ray
+#      Timeout: 30
+#      EnableVless: false
+#      VlessFlow: "xtls-rprx-vision"
+#      SpeedLimit: 0
+#      DeviceLimit: 0
+#      RuleListPath: # /etc/XrayR/rulelist
+#    ControllerConfig:
+#      ListenIP: 0.0.0.0
+#      SendIP: 0.0.0.0
+#      UpdatePeriodic: 60
+#      EnableDNS: false
+#      DNSType: AsIs
+#      EnableProxyProtocol: false
+#      AutoSpeedLimitConfig:
+#        Limit: 0
+#        WarnTimes: 0
+#        LimitSpeed: 0
+#        LimitDuration: 0
+#      GlobalDeviceLimitConfig:
+#        Enable: false
+#        RedisAddr: 127.0.0.1:6379
+#        RedisPassword: YOUR PASSWORD
+#        RedisDB: 0
+#        Timeout: 5
+#        Expiry: 60
+#      EnableFallback: false
+#      FallBackConfigs:
+#        - SNI:
+#          Alpn:
+#          Path:
+#          Dest: 80
+#          ProxyProtocolVer: 0
+#      EnableREALITY: true
+#      REALITYConfigs:
+#        Show: true
+#        Dest: www.amazon.com:443
+#        ProxyProtocolVer: 0
+#        ServerNames:
+#          - www.amazon.com
+#        PrivateKey: YOUR_PRIVATE_KEY
+#        MinClientVer:
+#        MaxClientVer:
+#        MaxTimeDiff: 0
+#        ShortIds:
+#          - ""
+#          - 0123456789abcdef
+#      CertConfig:
+#        CertMode: dns
+#        CertDomain: "node1.test.com"
+#        CertFile: /etc/XrayR/cert/node1.test.com.cert
+#        KeyFile: /etc/XrayR/cert/node1.test.com.key
+#        Provider: alidns
+#        Email: test@me.com
+#        DNSEnv:
+#          ALICLOUD_ACCESS_KEY: aaa
+#          ALICLOUD_SECRET_KEY: bbb
