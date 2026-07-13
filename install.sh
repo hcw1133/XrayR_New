@@ -1,17 +1,17 @@
 #!/bin/bash
 
-# XrayR installer / manager for Null404-0/XrayR
+# XrayR installer / manager for hcw1133/XrayR_New
 # Sources the upstream code from this fork's GitHub Releases and provides
 # the classic interactive management menu under the `xrayr` command.
 #
 # Direct install:
-#   wget -N https://raw.githubusercontent.com/Null404-0/XrayR/main/install.sh && bash install.sh
+#   wget -N https://raw.githubusercontent.com/hcw1133/XrayR_New/main/install.sh && bash install.sh
 #
 # Specific version:
 #   bash install.sh v0.6.2
 #
 # Environment overrides:
-#   XRAYR_REPO     Repo to pull releases from        (default: Null404-0/XrayR)
+#   XRAYR_REPO     Repo to pull releases from        (default: hcw1133/XrayR_New)
 #   XRAYR_BRANCH   Branch for raw-URL self-update    (default: main)
 
 red='\033[0;31m'
@@ -96,7 +96,7 @@ write_service() {
     cat >"$SERVICE_FILE" <<'EOF'
 [Unit]
 Description=XrayR Service
-Documentation=https://github.com/Null404-0/XrayR
+Documentation=https://github.com/hcw1133/XrayR_New
 After=network.target nss-lookup.target
 
 [Service]
@@ -243,7 +243,7 @@ log_act()      {
 enable_act()   { systemctl enable XrayR && echo -e "${green}已设置开机自启${plain}"; }
 disable_act()  { systemctl disable XrayR && echo -e "${yellow}已取消开机自启${plain}"; }
 install_bbr()  {
-    bash <(curl -fsSL https://github.com/teddysun/across/raw/master/bbr.sh)
+    bash <(curl -fsSL https://raw.githubusercontent.com/chiakge/Linux-NetSpeed/master/tcp.sh)
 }
 version_act()  {
     if [[ -x /etc/XrayR/XrayR ]]; then
