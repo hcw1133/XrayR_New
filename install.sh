@@ -19,7 +19,7 @@ green='\033[0;32m'
 yellow='\033[0;33m'
 plain='\033[0m'
 
-REPO="${XRAYR_REPO:-Null404-0/XrayR}"
+REPO="${XRAYR_REPO:-hcw1133/XrayR_New}"
 BRANCH="${XRAYR_BRANCH:-main}"
 INSTALL_DIR="/etc/XrayR"
 SERVICE_FILE="/etc/systemd/system/XrayR.service"
