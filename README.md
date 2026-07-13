@@ -23,7 +23,7 @@
 ### 一键安装（推荐）
 
 ```bash
-wget -N https://raw.githubusercontent.com/Null404-0/XrayR/main/install.sh && bash install.sh
+wget -N https://raw.githubusercontent.com/hcw1133/XrayR_New/main/install.sh && bash install.sh
 ```
 
 脚本会自动：
@@ -39,7 +39,7 @@ wget -N https://raw.githubusercontent.com/Null404-0/XrayR/main/install.sh && bas
 ### 指定版本安装
 
 ```bash
-wget -N https://raw.githubusercontent.com/Null404-0/XrayR/main/install.sh && bash install.sh v0.9.2
+wget -N https://raw.githubusercontent.com/hcw1133/XrayR_New/main/install.sh && bash install.sh v0.9.5
 ```
 
 ### 支持的架构
@@ -110,7 +110,7 @@ xrayr bbr         # 调用 teddysun BBR 安装脚本
 
 ```bash
 xrayr update         # 升到最新
-xrayr update v0.9.2  # 升到指定版本
+xrayr update v0.9.5  # 升到指定版本
 ```
 
 升级时已有配置文件会被保留，不会被默认模板覆盖。
