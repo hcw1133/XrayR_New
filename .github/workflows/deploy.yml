@@ -1,0 +1,21 @@
+name: release # 任务名称
+
+on: # 触发条件
+  push: # 在push时触发
+    tags: # 标签  这里标识在push tag时触发
+      - 'v*' # 以v开头的版本
+
+jobs: # 任务
+  build: # 任务ID
+    runs-on: windows-latest # 运行环境 此处为windows环境，可根据实际情况选择
+    steps:
+      - uses: actions/checkout@v4 # 检出代码
+
+      - name: Set up Go # 安装go 安装构建所需的环境 此处为go项目所以安装的go，如果为node项目则安装node，npm等
+        uses: actions/setup-go@v4
+        with: # 这里是actions中支持的参数
+          go-version-file: 'src/go.mod' # go.mod文件
+          cache-dependency-path: 'src/go.sum'
+
+      - name: Build # 构建
+        run: ./build.bat # 运行的命令 根据实际情况修改
